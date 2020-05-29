@@ -21,6 +21,21 @@ class mer(object):
     def __init__(self, file):
         self.file = file
 
+    def audit(self):
+        """
+        Run an audit by getting all of the necessary
+        information about the project
+
+        returns a list of str
+        [name, version, platform, protection status]
+        """
+        result = []
+        result.append(self.get_project_name())
+        result.append(self.get_version())
+        result.append(self.get_platform())
+        result.append(self.get_protection())
+        return result
+
     def get_version(self):
         """
         Gets the MER version
@@ -51,16 +66,37 @@ class mer(object):
             
             return "protection unknown"
 
-    def get_object(self, object_name):
+    def get_platform(self):
         """
-        Gets the raw data 
+        Gets the platform that the project is targeting
+        (ME or SE)
+
+        returns str
         """
         with olefile.OleFileIO(self.file) as ole:
-            # open the FILE_PROTECTION file
-            fp = ole.openstream(object_name)
-            # read the file
-            data = fp.read()
-            return data
+            # list the directory structure of the file
+            ld = ole.listdir()
+        name = ld[-1][0]
+        extension = name[-3:].lower()
+        if extension == "med":
+            return "FactoryTalk View Studio ME"
+        elif extenion == "sed":
+            return "FactoryTalk View Studio SE"
+        else:
+            return "Unknown platform"
+
+    def get_project_name(self):
+        """
+        Gets the original project name.  The MER/APA can be
+        renamed yet the original project name can be different.
+
+        returns str
+        """
+        with olefile.OleFileIO(self.file) as ole:
+            # list the directory structure of the file
+            ld = ole.listdir()
+        name = ld[-1][0]
+        return name[:-4]
 
     def get_project_structure(self):
         """
@@ -72,7 +108,7 @@ class mer(object):
             # list the directory structure of the file
             ld = ole.listdir()
         return ld
-        
+
     def unprotect_mer(self):
         """
         Find the FILE_PROTECTION file, which contains the protection
@@ -100,6 +136,16 @@ class mer(object):
                 # write the unprotected file
                 ole.write_stream("FILE_PROTECTION", data)
 
+    def _get_object(self, object_name):
+        """
+        Gets the raw data 
+        """
+        with olefile.OleFileIO(self.file) as ole:
+            # open the FILE_PROTECTION file
+            fp = ole.openstream(object_name)
+            # read the file
+            data = fp.read()
+            return data
 
 # dumb = mer('pw_a.mer').get_object("FILE_PROTECTION")
 # print(dumb)
