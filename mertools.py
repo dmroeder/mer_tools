@@ -63,7 +63,7 @@ class mer(object):
                     return (1, "Never allow conversion")
             elif data[1] == 1:
                 return (2, "Conversion protected by password")
-            
+
             return "protection unknown"
 
     def get_platform(self):
@@ -76,11 +76,15 @@ class mer(object):
         with olefile.OleFileIO(self.file) as ole:
             # list the directory structure of the file
             ld = ole.listdir()
-        name = ld[-1][0]
+        name = ''
+        for item in ld:
+            if item[0].endswith('.med') or item[0].endswith('.sed'):
+                name = item[0]
+
         extension = name[-3:].lower()
         if extension == "med":
             return "FactoryTalk View Studio ME"
-        elif extenion == "sed":
+        elif extension == "sed":
             return "FactoryTalk View Studio SE"
         else:
             return "Unknown platform"
@@ -95,8 +99,11 @@ class mer(object):
         with olefile.OleFileIO(self.file) as ole:
             # list the directory structure of the file
             ld = ole.listdir()
-        name = ld[-1][0]
-        return name[:-4]
+        name = ''
+        for item in ld:
+            if item[0].endswith('.med') or item[0].endswith('.sed'):
+                name = item[0][:-4]
+        return name
 
     def get_project_structure(self):
         """
