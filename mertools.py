@@ -109,6 +109,21 @@ class mer(object):
             ld = ole.listdir()
         return ld
 
+    def get_screen_names(self):
+        """
+        Gets a list of all of the screen names in the project
+
+        returns a list of str
+        """
+        with olefile.OleFileIO(self.file) as ole:
+            # list the directory structure of the file
+            ld = ole.listdir()
+            screens = []
+            for x in ld:
+                if x[0] == 'Gfx':
+                    screens.append(x[1])
+        return screens
+
     def unprotect_mer(self):
         """
         Find the FILE_PROTECTION file, which contains the protection
