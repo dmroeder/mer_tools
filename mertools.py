@@ -131,7 +131,7 @@ class mer(object):
                     screens.append(x[1])
         return screens
 
-    def unprotect_mer(self):
+    def enable_restore(self):
         """
         Find the FILE_PROTECTION file, which contains the protection
         settings and edit it to unprotect the file
@@ -158,7 +158,7 @@ class mer(object):
                 # write the unprotected file
                 ole.write_stream("FILE_PROTECTION", data)
 
-    def _get_object(self, object_name):
+    def get_object(self, object_name):
         """
         Gets the raw data 
         """
@@ -169,7 +169,3 @@ class mer(object):
             data = fp.read()
             return data
 
-# dumb = mer('pw_a.mer').get_object("FILE_PROTECTION")
-# print(dumb)
-dumb = mer('pw_a.mer').get_protection()
-print(dumb)
