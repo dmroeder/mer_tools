@@ -18,6 +18,7 @@ pip install olefile
 ## Getting Started
 
 ```
+from mer_tools import mer
 # get the version the MER was generated with
 version = mer('myfile.mer').get_version()
 print(version)
