@@ -7,6 +7,8 @@ This started out as a way to figure out what version a MER file was generated
 in.  Other tools and features will be added over time as I can figure
 them out
 
+See the [documentation](docs/README.md) for information in the various functions
+
 ## Depenencies
 
 olefile
