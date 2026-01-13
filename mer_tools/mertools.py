@@ -15,6 +15,9 @@
 """
 
 import olefile
+import os
+import struct
+import zlib
 
 class mer(object):
 
@@ -157,6 +160,19 @@ class mer(object):
                 data = data.replace(pw_string, replace_string)
                 # write the unprotected file
                 ole.write_stream("FILE_PROTECTION", data)
+        self.update_crc()
+
+    def update_crc(self):
+        """ Update the CRC in the MER
+        """
+        file_size = os.path.getsize(self.file)
+        with open(self.file, "rb") as f:
+            data = f.read(file_size-4)
+            calculated_crc = zlib.crc32(data) & 0xffffffff
+
+        with open(self.file, "wb") as f:
+            f.write(data)
+            f.write(struct.pack("<I", calculated_crc))
 
     def get_object(self, object_name):
         """
